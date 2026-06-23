@@ -33,7 +33,10 @@ export default function HomePage() {
       setNow(Date.now());
       void loadData();
     });
-    const interval = setInterval(() => setNow(Date.now()), 30000);
+    const interval = setInterval(() => {
+      setNow(Date.now());
+      void loadData();
+    }, 30000);
     return () => clearInterval(interval);
   }, []);
 

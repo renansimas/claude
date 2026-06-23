@@ -7,13 +7,19 @@ export default function StandingsPage() {
   const [standings, setStandings] = useState<ParticipantScore[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  function loadStandings() {
     fetch("/api/standings")
       .then((res) => res.json())
       .then((data) => {
         setStandings(data.standings ?? []);
         setLoading(false);
       });
+  }
+
+  useEffect(() => {
+    queueMicrotask(() => loadStandings());
+    const interval = setInterval(() => loadStandings(), 30000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
