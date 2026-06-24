@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useIdentity } from "@/components/IdentityBar";
+import { loadIdentity } from "@/lib/client-identity";
 import type { GameWithPicks } from "@/lib/types";
 
 type GameRowInput = {
@@ -61,7 +62,8 @@ export default function AdminPage() {
     setCreateError(null);
     setCreateSuccess(null);
 
-    if (!identity) {
+    const currentIdentity = identity ?? loadIdentity();
+    if (!currentIdentity) {
       setCreateError("Faça login para criar uma semana");
       return;
     }
@@ -71,8 +73,8 @@ export default function AdminPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        participantId: identity.participantId,
-        pin: identity.pin,
+        participantId: currentIdentity.participantId,
+        pin: currentIdentity.pin,
         label,
         games: rows.map((row, i) => ({
           ...row,
@@ -96,7 +98,8 @@ export default function AdminPage() {
   }
 
   async function handleSetResult(gameId: string, winnerTeam: string) {
-    if (!identity) {
+    const currentIdentity = identity ?? loadIdentity();
+    if (!currentIdentity) {
       setResultError("Faça login para marcar resultados");
       return;
     }
@@ -106,8 +109,8 @@ export default function AdminPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        participantId: identity.participantId,
-        pin: identity.pin,
+        participantId: currentIdentity.participantId,
+        pin: currentIdentity.pin,
         gameId,
         winnerTeam,
       }),

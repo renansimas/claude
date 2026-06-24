@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useIdentity } from "@/components/IdentityBar";
+import { loadIdentity } from "@/lib/client-identity";
 import type { GameWithPicks, Week } from "@/lib/types";
 
 type ParticipantOption = { id: string; name: string };
@@ -54,7 +55,8 @@ export default function HomePage() {
     : [];
 
   async function handlePick(gameId: string, pickedTeam: string) {
-    if (!identity) {
+    const currentIdentity = identity ?? loadIdentity();
+    if (!currentIdentity) {
       setError("Faça login para enviar um palpite");
       return;
     }
@@ -64,8 +66,8 @@ export default function HomePage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        participantId: identity.participantId,
-        pin: identity.pin,
+        participantId: currentIdentity.participantId,
+        pin: currentIdentity.pin,
         gameId,
         pickedTeam,
       }),
