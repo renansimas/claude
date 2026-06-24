@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useIdentity } from "@/components/IdentityBar";
 import { loadIdentity } from "@/lib/client-identity";
+import { teamLogoUrl } from "@/lib/nba-teams";
 import type { GameWithPicks, Week } from "@/lib/types";
 
 type ParticipantOption = { id: string; name: string };
@@ -131,6 +133,7 @@ export default function HomePage() {
                     ? game.picks[identity.participantId]
                     : undefined;
                   const isSelected = myPick === team;
+                  const logoUrl = teamLogoUrl(team);
                   return (
                     <button
                       key={team}
@@ -138,12 +141,21 @@ export default function HomePage() {
                         isPastKickoff || submittingGameId === game.id
                       }
                       onClick={() => handlePick(game.id, team)}
-                      className={`flex-1 rounded border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 ${
+                      className={`flex flex-1 flex-col items-center gap-1 rounded border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 ${
                         isSelected
                           ? "border-blue-600 bg-blue-600 text-white"
                           : "hover:bg-gray-100"
                       }`}
                     >
+                      {logoUrl && (
+                        <Image
+                          src={logoUrl}
+                          alt={team}
+                          width={40}
+                          height={40}
+                          unoptimized
+                        />
+                      )}
                       {team}
                     </button>
                   );

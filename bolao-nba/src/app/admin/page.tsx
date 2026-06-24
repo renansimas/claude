@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useIdentity } from "@/components/IdentityBar";
 import { loadIdentity } from "@/lib/client-identity";
+import { NBA_TEAMS, teamLogoUrl } from "@/lib/nba-teams";
 import type { GameWithPicks } from "@/lib/types";
 
 type GameRowInput = {
@@ -172,27 +174,51 @@ export default function AdminPage() {
                   required
                   className="rounded border px-2 py-1 text-sm"
                 />
-                <input
-                  type="text"
-                  placeholder="Time casa"
-                  value={row.teamHome}
-                  onChange={(e) =>
-                    updateRow(i, { teamHome: e.target.value })
-                  }
-                  required
-                  className="w-32 rounded border px-2 py-1 text-sm"
-                />
+                <div className="flex items-center gap-1">
+                  {row.teamHome && (
+                    <Image
+                      src={teamLogoUrl(row.teamHome)}
+                      alt={row.teamHome}
+                      width={24}
+                      height={24}
+                      unoptimized
+                    />
+                  )}
+                  <select
+                    value={row.teamHome}
+                    onChange={(e) => updateRow(i, { teamHome: e.target.value })}
+                    required
+                    className="rounded border px-2 py-1 text-sm"
+                  >
+                    <option value="">Time casa</option>
+                    {NBA_TEAMS.map((t) => (
+                      <option key={t.name} value={t.name}>{t.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <span>x</span>
-                <input
-                  type="text"
-                  placeholder="Time visitante"
-                  value={row.teamAway}
-                  onChange={(e) =>
-                    updateRow(i, { teamAway: e.target.value })
-                  }
-                  required
-                  className="w-32 rounded border px-2 py-1 text-sm"
-                />
+                <div className="flex items-center gap-1">
+                  {row.teamAway && (
+                    <Image
+                      src={teamLogoUrl(row.teamAway)}
+                      alt={row.teamAway}
+                      width={24}
+                      height={24}
+                      unoptimized
+                    />
+                  )}
+                  <select
+                    value={row.teamAway}
+                    onChange={(e) => updateRow(i, { teamAway: e.target.value })}
+                    required
+                    className="rounded border px-2 py-1 text-sm"
+                  >
+                    <option value="">Time visitante</option>
+                    {NBA_TEAMS.map((t) => (
+                      <option key={t.name} value={t.name}>{t.name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             ))}
           </div>
@@ -243,8 +269,17 @@ export default function AdminPage() {
                       key={team}
                       disabled={submittingResultId === game.id}
                       onClick={() => handleSetResult(game.id, team)}
-                      className="rounded border px-2 py-1 hover:bg-gray-100 disabled:opacity-50"
+                      className="flex items-center gap-1 rounded border px-2 py-1 hover:bg-gray-100 disabled:opacity-50"
                     >
+                      {teamLogoUrl(team) && (
+                        <Image
+                          src={teamLogoUrl(team)}
+                          alt={team}
+                          width={20}
+                          height={20}
+                          unoptimized
+                        />
+                      )}
                       {team} venceu
                     </button>
                   ))}
